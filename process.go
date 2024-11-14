@@ -1,4 +1,4 @@
-package pwntools
+package gopwntools
 
 import (
 	"fmt"
