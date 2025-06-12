@@ -230,3 +230,19 @@ func (conn *Conn) RecvLineS() string {
 func (conn *Conn) RecvLineContainsS(pattern []byte) string {
 	return string(conn.RecvLineContains(pattern))
 }
+
+func (conn *Conn) SendS(data string) int {
+	return conn.Send([]byte(data))
+}
+
+func (conn *Conn) SendLineS(data string) int {
+	return conn.SendLine([]byte(data))
+}
+
+func (conn *Conn) SendLineAfterS(pattern, data string) []byte {
+	return conn.SendLineAfter([]byte(pattern), []byte(data))
+}
+
+func (conn *Conn) SendAfterS(pattern, data string) []byte {
+	return conn.SendAfter([]byte(pattern), []byte(data))
+}
