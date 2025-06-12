@@ -33,7 +33,7 @@ func Hex(b []byte) string {
 func Xor(a []byte, b ...[]byte) []byte {
 	length := len(a)
 
-	for j := 0; j < len(b); j++ {
+	for j := range b {
 		if len(b[j]) > length {
 			length = len(b[j])
 		}
@@ -41,14 +41,14 @@ func Xor(a []byte, b ...[]byte) []byte {
 
 	r := make([]byte, length)
 
-	for i := 0; i < length; i++ {
+	for i := range length {
 		rr := a[i%len(a)]
 
-		for j := 0; j < len(b); j++ {
+		for j := range b {
 			rr ^= b[j][i%len(b[j])]
 		}
 
-		r = append(r, rr)
+		r[i] = rr
 	}
 
 	return r

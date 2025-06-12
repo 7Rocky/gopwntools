@@ -2,7 +2,11 @@ package gopwntools
 
 import (
 	"fmt"
+	"os"
+	"syscall"
+
 	"os/exec"
+	"os/signal"
 )
 
 type ProcessConf struct {
@@ -33,6 +37,14 @@ func process(cmd *exec.Cmd) *Conn {
 
 	info = connInfo{command: cmd.Path, pid: cmd.Process.Pid, isProcess: true}
 	p.Success(fmt.Sprintf("pid %d", info.pid))
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+
+	go func() {
+		<-c
+		conn.errChan <- fmt.Errorf("Control-C")
+	}()
 
 	return &conn
 }
