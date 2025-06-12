@@ -52,9 +52,7 @@ func readInteractive(prompt string) {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		b, err := reader.ReadBytes('\n')
-
-		if len(b) > 0 && err == nil {
+		if b, err := reader.ReadBytes('\n'); len(b) > 0 && err == nil {
 			interactiveConn.Send(b)
 			fmt.Print(prompt)
 		}
@@ -152,18 +150,13 @@ func (conn *Conn) RecvN(n int) []byte {
 	return []byte{}
 }
 
-func (conn *Conn) RecvUntil(pattern []byte, drop ...bool) []byte {
-	var recv []byte
+func (conn *Conn) RecvUntil(pattern []byte, drop ...bool) (recv []byte) {
 	b := make([]byte, 1)
 
 	for !bytes.HasSuffix(recv, pattern) {
-		n, err := conn.stdout.Read(b)
-
-		if err != nil {
+		if n, err := conn.stdout.Read(b); err != nil {
 			panic(err)
-		}
-
-		if n == 1 {
+		} else if n == 1 {
 			recv = append(recv, b[0])
 		}
 	}
@@ -174,21 +167,19 @@ func (conn *Conn) RecvUntil(pattern []byte, drop ...bool) []byte {
 		return bytes.ReplaceAll(recv, pattern, []byte(""))
 	}
 
-	return recv
+	return
 }
 
 func (conn *Conn) RecvLine() []byte {
 	return conn.RecvUntil([]byte{'\n'})
 }
 
-func (conn *Conn) RecvLineContains(pattern []byte) []byte {
-	var recv []byte
-
+func (conn *Conn) RecvLineContains(pattern []byte) (recv []byte) {
 	for {
 		recv = append(recv, conn.RecvLine()...)
 
 		if bytes.Contains(recv, pattern) {
-			return recv
+			return
 		}
 	}
 }

@@ -5,16 +5,14 @@ import (
 	"time"
 )
 
-func Asm(shellcode string) []byte {
+func Asm(shellcode string) (sc []byte) {
 	f, err := os.Create("/tmp/1")
 
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = f.Write([]byte(".intel_syntax noprefix\n.p2align 0\n" + shellcode + "\n"))
-
-	if err != nil {
+	if _, err = f.Write([]byte(".intel_syntax noprefix\n.p2align 0\n" + shellcode + "\n")); err != nil {
 		panic(err)
 	}
 
@@ -31,9 +29,7 @@ func Asm(shellcode string) []byte {
 		time.Sleep(time.Millisecond * 100)
 	}
 
-	sc, err := os.ReadFile("/tmp/3")
-
-	if err != nil {
+	if sc, err = os.ReadFile("/tmp/3"); err != nil {
 		panic(err)
 	}
 
@@ -41,5 +37,5 @@ func Asm(shellcode string) []byte {
 	os.Remove("/tmp/2")
 	os.Remove("/tmp/3")
 
-	return sc
+	return
 }
